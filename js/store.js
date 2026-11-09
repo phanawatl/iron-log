@@ -25,13 +25,45 @@ export const DEFAULT_EXERCISES = [
   { id: 'db-lateral', name: 'DB Lateral Raise', equip: 'DB', unit: 'reps', side: '', anim: 'lateral' },
   { id: 'db-carry', name: "DB Farmer's Carry", equip: 'DB', unit: 'sec', side: '', anim: 'carry' },
   { id: 'push-up', name: 'Push-up', equip: 'BW', unit: 'reps', side: '', anim: 'pushup' },
+  // v2: kettlebell set
+  { id: 'kb-getup', name: 'Turkish Get-up', equip: 'KB', unit: 'reps', side: 'ข้าง', anim: 'getup' },
+  { id: 'kb-clean', name: 'KB Clean', equip: 'KB', unit: 'reps', side: 'ข้าง', anim: 'clean' },
+  { id: 'kb-high-pull', name: 'KB High Pull', equip: 'KB', unit: 'reps', side: '', anim: 'highpull' },
+  { id: 'kb-windmill', name: 'KB Windmill', equip: 'KB', unit: 'reps', side: 'ข้าง', anim: 'windmill' },
+  { id: 'kb-around-world', name: 'KB Around-the-World', equip: 'KB', unit: 'reps', side: 'ทิศ', anim: 'aroundworld' },
+  { id: 'kb-figure-8', name: 'KB Figure-8', equip: 'KB', unit: 'reps', side: '', anim: 'figure8' },
 ];
+
+const TEMPLATE_C = () => ({
+  id: 'C',
+  name: 'Template C',
+  items: [
+    item('kb-getup', 5, 1, 3, 60),
+    item('kb-clean', 5, 8, 12),
+    item('kb-high-pull', 5, 10, 15, 60),
+    item('kb-windmill', 5, 5, 8),
+    item('kb-around-world', 5, 8, 12, 45),
+  ],
+});
+
+const CURRENT_VERSION = 2;
+
+// Bring data saved by an older version up to date without touching the user's own changes.
+export function migrate(s) {
+  if ((s.version || 1) < 2) {
+    const have = new Set(s.exercises.map((e) => e.id));
+    for (const e of DEFAULT_EXERCISES.slice(16)) if (!have.has(e.id)) s.exercises.push({ ...e });
+    if (!s.templates.some((t) => t.id === 'C')) s.templates.push(TEMPLATE_C());
+  }
+  s.version = CURRENT_VERSION;
+  return s;
+}
 
 const item = (exId, weight, min, max, rest = 75) => ({ exId, sets: 3, min, max, weight, rest });
 
 export function defaultState(today = ymd()) {
   return {
-    version: 1,
+    version: CURRENT_VERSION,
     createdAt: today,
     startWeek: weekStartOf(today),
     settings: { quota: 3 },
@@ -59,6 +91,7 @@ export function defaultState(today = ymd()) {
           item('plank', 0, 30, 60, 60),
         ],
       },
+      TEMPLATE_C(),
     ],
     nextTpl: 0,
     sessions: [],
@@ -72,7 +105,13 @@ export function defaultState(today = ymd()) {
 export function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const s = JSON.parse(raw);
+      const before = s.version;
+      migrate(s);
+      if (s.version !== before) save(s);
+      return s;
+    }
   } catch (e) {
     console.error('load failed', e);
   }

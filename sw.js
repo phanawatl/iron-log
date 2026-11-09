@@ -1,6 +1,6 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
 // Bump VERSION whenever files change so phones pick up the new copy.
-const VERSION = 'iron-log-v1';
+const VERSION = 'iron-log-v2';
 const SHELL = [
   './',
   './index.html',

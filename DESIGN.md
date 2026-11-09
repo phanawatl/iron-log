@@ -46,6 +46,10 @@ App ส่วนตัวสำหรับติดตามและคุม�
 ## Template เริ่มต้น (พัก 60–90 วินาที)
 **A**: Goblet Squat (DB 10) 3×8–12 · DB Overhead Press (5) 3×8–12 · DB Bent-over Row (10) 3×8–12 · KB Swing (5) 3×15–20
 **B**: DB Romanian Deadlift (10) 3×8–12 · DB Reverse Lunge (5) 3×8–12/ข้าง · DB Floor Press (10) 3×8–12 · KB Halo (5) 3×8–12/ทิศ · Plank 3×30–60 วินาที
+**C** (KB 5 kg, เพิ่ม 2026-11-09): Turkish Get-up 3×1–3/ข้าง · KB Clean 3×8–12/ข้าง · KB High Pull 3×10–15 · KB Windmill 3×5–8/ข้าง · KB Around-the-World 3×8–12/ทิศ
+
+วนเป็น A → B → C ด้วยโควตา 3 ครั้ง/สัปดาห์ แต่ละ template จึงได้เล่นสัปดาห์ละครั้ง
+KB Figure-8 อยู่ในคลังท่า ไม่ได้ใส่ใน template
 
 ## หน้าจอ
 1. **หน้าแรก**: ตัวทวงถามโควตา, streak, ปุ่มเริ่ม/ทำต่อ template ถัดไป, ข้าม, ใบผ่อนผัน, เตือนสำรองข้อมูล

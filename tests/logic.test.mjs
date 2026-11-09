@@ -2,7 +2,25 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as L from '../js/logic.js';
-import { defaultState } from '../js/store.js';
+import { defaultState, migrate } from '../js/store.js';
+
+test('v1 data gains the KB exercises and Template C, keeping user changes', () => {
+  const s = defaultState('2026-11-09');
+  s.version = 1;
+  s.exercises = s.exercises.slice(0, 16);
+  s.templates = s.templates.slice(0, 2);
+  s.templates[0].name = 'My A';
+  s.nextTpl = 1;
+  migrate(s);
+  assert.equal(s.version, 2);
+  assert.equal(s.exercises.length, 22);
+  assert.deepEqual(s.templates.map((t) => t.id), ['A', 'B', 'C']);
+  assert.equal(s.templates[0].name, 'My A');
+  assert.equal(s.nextTpl, 1);
+  migrate(s); // running again changes nothing
+  assert.equal(s.exercises.length, 22);
+  assert.equal(s.templates.length, 3);
+});
 
 const done = (date, tplId = 'A') => ({ id: date + tplId, date, tplId, tplName: tplId, items: [], completedAt: date + 'T10:00:00Z' });
 

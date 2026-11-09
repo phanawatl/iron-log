@@ -66,6 +66,42 @@ export const ANIMS = {
     P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
       elbow: [38, 25], hand: [26, 25], elbow2: [62, 25], hand2: [74, 25], front: true }),
   ],
+  // ---- kettlebell set (v2) ----
+  getup: [
+    { head: [16, 83], sh: [28, 86], hip: [56, 86], knee: [67, 72], ankle: [77, 91], knee2: [72, 88], ankle2: [88, 90], toe2: [92, 86],
+      elbow: [29, 74], hand: [29, 61], elbow2: [37, 90], hand2: [45, 91] },
+    { head: [39, 51], sh: [44, 62], hip: [56, 86], knee: [66, 72], ankle: [76, 91], knee2: [72, 88], ankle2: [88, 90], toe2: [92, 86],
+      elbow: [44, 49], hand: [44, 36], elbow2: [40, 76], hand2: [36, 90] },
+    P({ elbow: [51, 11], hand: [51, -2], elbow2: [50, 37], hand2: [50, 49] }),
+  ],
+  clean: [
+    { ...HINGE, elbow: [64, 52], hand: [62, 65] },
+    P({ elbow: [54, 37], hand: [56, 27], bell: [52, 29] }),
+  ],
+  highpull: [
+    { ...HINGE, elbow: [58, 52], hand: [50, 63] },
+    P({ elbow: [40, 22], hand: [57, 26] }),
+  ],
+  windmill: [
+    P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [52, 11], hand: [52, -2], elbow2: [45, 37], hand2: [43, 49], front: true }),
+    P({ head: [30, 23], sh: [37, 32], hip: [52, 53], knee: [46, 72], ankle: [44, 91], toe: [40, 92], knee2: [54, 72], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [37, 19], hand: [37, 6], elbow2: [34, 45], hand2: [33, 58], front: true }),
+  ],
+  aroundworld: [
+    P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [43, 40], hand: [50, 53], elbow2: [57, 40], hand2: [50, 53], front: true }),
+    P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [53, 40], hand: [65, 47], elbow2: [61, 38], hand2: [65, 47], front: true }),
+    P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [42, 38], hand: [50, 43], elbow2: [58, 38], hand2: [50, 43], front: true }),
+    P({ knee: [46, 71], ankle: [44, 91], toe: [40, 92], knee2: [54, 71], ankle2: [56, 91], toe2: [60, 92],
+      elbow: [39, 38], hand: [35, 47], elbow2: [47, 40], hand2: [35, 47], front: true }),
+  ],
+  figure8: [
+    { hip: [42, 55], knee: [52, 71], ankle: [50, 91], sh: [64, 38], head: [71, 31], elbow: [66, 51], hand: [64, 64], knee2: [48, 72], ankle2: [46, 91] },
+    { hip: [42, 55], knee: [52, 71], ankle: [50, 91], sh: [64, 38], head: [71, 31], elbow: [58, 52], hand: [47, 66], knee2: [48, 72], ankle2: [46, 91] },
+  ],
   carry: [
     P({ knee: [55, 71], ankle: [58, 91], knee2: [46, 71], ankle2: [42, 91] }),
     P({ knee: [46, 71], ankle: [42, 91], knee2: [55, 71], ankle2: [58, 91] }),
@@ -86,6 +122,7 @@ function complete(p) {
 
 // Where the weight sits: a dumbbell at the hand, a kettlebell hanging past the hand.
 function bellAt(p, which) {
+  if (p.bell) return p.bell; // e.g. rack position: the bell rests on the forearm
   const [ex, ey] = which === 2 ? p.elbow2 : p.elbow;
   const [hx, hy] = which === 2 ? p.hand2 : p.hand;
   const dx = hx - ex, dy = hy - ey;
@@ -118,7 +155,11 @@ function circle(poses, pointsOf, r, cls, dur) {
     animAttr('cx', cx, dur) + animAttr('cy', cy, dur) + '</circle>';
 }
 
+// Slower loops for multi-step movements.
+const DURATION = { getup: 6, aroundworld: 3.4, windmill: 3.4 };
+
 export function figureSVG(animKey, equip = 'BW', dur = 2.6) {
+  dur = DURATION[animKey] || dur;
   const raw = ANIMS[animKey] || ANIMS.curl;
   const poses = raw.map(complete);
   const front = !!raw[0].front;

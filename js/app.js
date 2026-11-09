@@ -1,5 +1,5 @@
 import * as L from './logic.js';
-import { load, save, uid, backupFile, validateImport, daysSinceBackup, defaultState } from './store.js';
+import { load, save, uid, backupFile, validateImport, daysSinceBackup, defaultState, migrate } from './store.js';
 import { figureSVG, ANIMS } from './anim.js';
 
 let state = load();
@@ -571,7 +571,7 @@ async function doImport(input) {
     const obj = JSON.parse(await f.text());
     if (!validateImport(obj)) throw new Error('bad');
     if (!confirm('แทนที่ข้อมูลในเครื่องด้วยไฟล์นี้?')) return;
-    state = obj;
+    state = migrate(obj);
     persist();
     toast('นำเข้าแล้ว');
     render();
